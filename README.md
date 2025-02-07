@@ -44,7 +44,7 @@ semp 접속 정보는 admin만 실행이 됩니다., 일반 유저는 권한 설
     ```
 2. 빌드된 JAR 파일 실행:
     ```bash
-    java -jar target/solace-queue-operations-0.0.1-SNAPSHOT.jar
+    java -jar ReplayMessage-0.0.1-SNAPSHOT.jar
     ```
 
 이예제는 기본적으로 `http://localhost:8081`에서 실행됩니다.
