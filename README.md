@@ -32,20 +32,14 @@ semp 접속 정보는 admin만 실행이 됩니다., 일반 유저는 권한 설
 
 ## 🖥️ 실행 방법
 
-### 1. 프로젝트 클론
-```bash
-git clone https://github.com/[YOUR_USERNAME]/solace-queue-operations.git
-cd solace-queue-operations
-```
 
-### 2. 서버 실행
+## 📥 JAR 파일 다운로드
 
-프로젝트는 Maven으로 빌드되며, 다음 명령어로 Spring Boot 애플리케이션을 실행할 수 있습니다:
+최신 실행 파일(JAR)을 다운로드하려면 아래 링크를 클릭하세요:
 
-#### Maven Command
-```bash
-./mvnw spring-boot:run
-```
+[**ReplayMessage-0.0.1-SNAPSHOT.jar 다운로드**](https://github.com/okaypark/ReplayQueueBrowsing/raw/main/build/libs/ReplayMessage-0.0.1-SNAPSHOT.jar)
+
+---
 
 #### 또는 직접 JAR 파일 실행
 1. JAR 파일 빌드:
@@ -58,6 +52,7 @@ cd solace-queue-operations
     ```
 
 이예제는 기본적으로 `http://localhost:8081`에서 실행됩니다.
+![replay&queueBrowsing.png](src%2Fmain%2Fresources%2Freplay%26queueBrowsing.png)
 
 ---
 
@@ -67,18 +62,6 @@ cd solace-queue-operations
 - **Browse Queue**: Queue에 수신된 메시지를 브라우징합니다. JCSMP
 - **WebSocket 지원**: 실시간 메시지 수신 데이터 표시.
 
----
-
-## 🚀 기술 스택
-
-### 프런트엔드
-- **HTML, CSS**: 사용자 인터페이스를 구성.
-- **JavaScript**: 웹 페이지 로직 및 WebSocket 통신 연결.
-
-### 백엔드
-- **Spring Boot**: API 서버 및 비즈니스 로직 처리.
-- **Java 17**: 최신 Java SDK로 개발.
-- **Jakarta EE**: `Jakarta` 라이브러리를 이용한 기능 구성.
 
 ### 메시징 시스템
 - **Solace**: 메시징 Queue, REPLAY
