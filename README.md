@@ -11,20 +11,16 @@ Solace 메시징 시스템의 접속 정보와 사용자 계정은 `src/main/res
 
 ```yaml
 solace:
-  host: tcp://<SOLACE_HOST>:55555
-  vpn-name: <YOUR_VPN_NAME>
-  username: <YOUR_USERNAME>
-  password: <YOUR_PASSWORD>
-
-server:
-  port: 8081
+  host: "tcp://localhost:55555" # Solace Event Broker 주소
+  msgVpn: "TestVPN"            # 메시지 VPN 이름
+  clientUsername: "TestUser"   # 클라이언트 사용자 이름
+  clientPassword: "TestPassword" # 클라이언트 비밀번호
 
 semp:
   host: "http://localhost:8080"
   msgVpn: "TestVPN"            # 메시지 VPN 이름
-  clientUsername: "admin"      # 클라이언트 사용자 이름
-  clientPassword: "admin"      # 클라이언트 비밀번호
-
+  clientUsername: "admin"   # 클라이언트 사용자 이름
+  clientPassword: "admin" # 클라이언트 비밀번호
 ```
 semp 접속 정보는 admin만 실행이 됩니다., 일반 유저는 권한 설정하면 가능 client Profile, ACL Profile
 
