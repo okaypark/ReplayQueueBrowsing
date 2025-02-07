@@ -1,0 +1,37 @@
+solace:
+  host: "tcp://localhost:55555" # Solace Event Broker 주소, ws://localhost:55555 웹소켓 or wss://~~ 보안웹소켓으로 통신 가능
+  msgVpn: "TestVPN"            # 메시지 VPN 이름
+  clientUsername: "TestUser"   # 클라이언트 사용자 이름
+  clientPassword: "TestPassword" # 클라이언트 비밀번호
+
+semp:
+  host: "http://localhost:8080"
+  msgVpn: "TestVPN"            # 메시지 VPN 이름
+  clientUsername: "admin"   # 클라이언트 사용자 이름
+  clientPassword: "admin" # 클라이언트 비밀번호
+
+server:
+  port: 8081
+
+debug: true
+
+# H2 데이터베이스 URL, 사용자명, 비밀번호 설정
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: sapassword
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+      show-sql: true
+    properties:
+      hibernate:
+        format_sql: true

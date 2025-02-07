@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solace Queue Operations</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            display: flex; /* 화면을 반으로 나누기 위한 설정 */
+        }
+        .container {
+            flex: 1; /* 각 컨테이너가 균등하게 공간을 차지함 */
+            padding: 20px;
+        }
+        input, button {
+            padding: 10px;
+            margin: 5px 0;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+<!-- 왼쪽: Replay Section -->
+<div class="container" style="border-right: 1px solid #ccc;">
+    <h1>Solace Queue Replay</h1>
+    <label for="queueNameReplay">Enter Queue Name:</label>
+    <input type="text" id="queueNameReplay" placeholder="Enter your queue name here" />
+    <br />
+    <button id="replayButton">Replay</button>
+    <p id="replayResponseMessage" style="color: green; font-weight: bold;"></p>
+</div>
+
+<!-- 오른쪽: Browse Queue Section -->
+<div class="container">
+    <h1>Browse Queue</h1>
+    <label for="queueNameBrowse">Enter Queue Name:</label>
+    <input type="text" id="queueNameBrowse" placeholder="Enter your queue name here" />
+    <br />
+    <button id="browseButton">Browse Queue</button>
+    <p id="browseResponseMessage" style="color: green; font-weight: bold;"></p>
+</div>
+
+<script>
+    // Replay 요청 처리
+    document.getElementById("replayButton").addEventListener("click", function () {
+        // Get the input value from the user
+        const queueName = document.getElementById("queueNameReplay").value;
+
+        // Validate input
+        if (queueName.trim() === "") {
+            alert("Queue name is required!");
+            return;
+        }
+
+        // Make an HTTP POST request to the Spring Boot server
+        fetch("/api/replay/replayCommand", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                queueName
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.text(); // Get the response as text
+        })
+        .then(data => {
+            document.getElementById("replayResponseMessage").innerText = `Server Response: ${data}`;
+            document.getElementById("replayResponseMessage").style.color = "green";
+        })
+        .catch(error => {
+            document.getElementById("replayResponseMessage").innerText = `Error: ${error.message}`;
+            document.getElementById("replayResponseMessage").style.color = "red";
+        });
+    });
+
+    // Browse Queue 요청 처리
+    document.getElementById("browseButton").addEventListener("click", function () {
+        // Get the input value from the user
+        const queueName = document.getElementById("queueNameBrowse").value;
+
+        // Validate input
+        if (queueName.trim() === "") {
+            alert("Queue name is required!");
+            return;
+        }
+
+        // Make an HTTP POST request to the Spring Boot server
+        fetch("/api/replay/browsingQueue", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                queueName
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.text(); // Get the response as text
+        })
+        .then(data => {
+            document.getElementById("browseResponseMessage").innerText = `Server Response: ${data}`;
+            document.getElementById("browseResponseMessage").style.color = "green";
+        })
+        .catch(error => {
+            document.getElementById("browseResponseMessage").innerText = `Error: ${error.message}`;
+            document.getElementById("browseResponseMessage").style.color = "red";
+        });
+    });
+</script>
+</body>
+</html>
