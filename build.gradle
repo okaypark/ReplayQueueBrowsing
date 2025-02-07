@@ -66,6 +66,15 @@ dependencies {
 	// For any local libs that are not available from mavenCentral
 	implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+	// Spring Boot 및 다른 의존성들
+	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	// 테스트 의존성 추가
+	testImplementation 'org.springframework.boot:spring-boot-starter-test' // Spring 기본 테스트
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0' // JUnit 5
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0' // JUnit 5 실행 엔진
+
 }
 
 dependencyManagement {
