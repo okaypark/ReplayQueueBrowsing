@@ -38,11 +38,7 @@ semp 접속 정보는 admin만 실행이 됩니다., 일반 유저는 권한 설
 ---
 
 #### 또는 직접 JAR 파일 실행
-1. JAR 파일 빌드:
-    ```bash
-    ./mvnw clean package
-    ```
-2. 빌드된 JAR 파일 실행:
+1. 빌드된 JAR 파일 실행:
     ```bash
     java -jar ReplayMessage-0.0.1-SNAPSHOT.jar
     ```
@@ -54,8 +50,10 @@ semp 접속 정보는 admin만 실행이 됩니다., 일반 유저는 권한 설
 
 ## 📋 주요 기능
 
-- **Replay Command**: 특정 Queue에서 메시지를 다시 재생합니다. SEMP 
+- **Replay Command**: 특정 Queue에서 메시지를 다시 재생합니다. SEMP
+- 참고소스 : [SEMPCommand.java](src%2Fmain%2Fjava%2Fsolace%2Ftest%2FReplayQueueBrowsing%2Fsolace%2FSEMPCommand.java)
 - **Browse Queue**: Queue에 수신된 메시지를 브라우징합니다. JCSMP
+- 참고소스 : [QueueConsumer.java](src%2Fmain%2Fjava%2Fsolace%2Ftest%2FReplayQueueBrowsing%2Fsolace%2FQueueConsumer.java)
 - **WebSocket 지원**: 실시간 메시지 수신 데이터 표시.
 
 
