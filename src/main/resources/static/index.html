@@ -40,12 +40,22 @@
     <br />
     <button id="browseButton">Browse Queue</button>
     <p id="browseResponseMessage" style="color: green; font-weight: bold;"></p>
+    <div id="browseResponseMessageContainer">
+        <h2>브라우징 한 메시지:</h2>
+        <p id="borwsingReponseMessage">not received message yet...</p>
+    </div>
 </div>
 
 <script>
+    let socket = null; // WebSocket 전역 변수
+
+    // 초기화: 페이지를 로드할 때 WebSocket 세션을 연결
+    window.onload = function () {
+        connectWebSocket(); // 페이지 로드시 WebSocket 연결
+    };
+
     // Replay 요청 처리
     document.getElementById("replayButton").addEventListener("click", function () {
-        // Get the input value from the user
         const queueName = document.getElementById("queueNameReplay").value;
 
         // Validate input
@@ -68,7 +78,7 @@
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            return response.text(); // Get the response as text
+            return response.text();
         })
         .then(data => {
             document.getElementById("replayResponseMessage").innerText = `Server Response: ${data}`;
@@ -81,41 +91,88 @@
     });
 
     // Browse Queue 요청 처리
-    document.getElementById("browseButton").addEventListener("click", function () {
-        // Get the input value from the user
+    document.getElementById("browseButton").addEventListener("click", async function () {
         const queueName = document.getElementById("queueNameBrowse").value;
 
-        // Validate input
         if (queueName.trim() === "") {
             alert("Queue name is required!");
             return;
         }
 
-        // Make an HTTP POST request to the Spring Boot server
-        fetch("/api/replay/browsingQueue", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                queueName
-            })
-        })
-        .then(response => {
+        // 상태 메시지: "Browsing Queue..."로 변경
+        document.getElementById("borwsingReponseMessage").textContent = "Browsing Queue...";
+
+        // 브라우징 요청을 서버에 전달
+        try {
+            const response = await fetch("/api/replay/browsingQueue", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ queueName })
+            });
+
+            const result = await response.text();
+
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                throw new Error(`Server error: ${result}`);
             }
-            return response.text(); // Get the response as text
-        })
-        .then(data => {
-            document.getElementById("browseResponseMessage").innerText = `Server Response: ${data}`;
-            document.getElementById("browseResponseMessage").style.color = "green";
-        })
-        .catch(error => {
-            document.getElementById("browseResponseMessage").innerText = `Error: ${error.message}`;
-            document.getElementById("browseResponseMessage").style.color = "red";
-        });
+
+            // 브라우징 완료 메시지 업데이트
+            document.getElementById("borwsingReponseMessage").textContent = "Browse Completed";
+
+            console.log("Browsing complete.");
+        } catch (error) {
+            alert("Error while Browsing Queue: " + error.message);
+
+            // 오류 발생 시 상태 메시지 업데이트
+            document.getElementById("borwsingReponseMessage").textContent = "Error occurred while browsing.";
+        }
     });
+
+    //////////////////////
+    function disconnectWebSocket() {
+        if (socket && socket.readyState === WebSocket.OPEN) {
+            socket.close(); // WebSocket 연결 해제
+            console.log("WebSocket disconnected.");
+        }
+    }
+
+    function connectWebSocket() {
+        if (socket && socket.readyState === WebSocket.OPEN) {
+            console.log("WebSocket is already connected.");
+            return; // 기존 연결 유지
+        }
+
+        // WebSocket URL 설정
+        socket = new WebSocket("ws://localhost:8081/ws/messages");
+
+        socket.onopen = () => {
+            console.log("WebSocket connected!");
+        };
+
+        socket.onmessage = (event) => {
+            const message = event.data;
+            displayReceivedMessage(message); // 수신된 메시지 표시
+        };
+
+        socket.onerror = (error) => {
+            console.error("WebSocket error:", error);
+        };
+
+        socket.onclose = () => {
+            console.log("WebSocket connection closed!");
+            socket = null; // 연결 상태를 초기화
+        };
+    }
+
+    function displayReceivedMessage(message) {
+        const messageList = document.getElementById("browseResponseMessageContainer"); // 브라우징 메시지 표시 컨테이너
+
+        if (messageList) {
+            const messageItem = document.createElement("li");
+            messageItem.textContent = message;
+            messageList.appendChild(messageItem);
+        }
+    }
 </script>
 </body>
 </html>

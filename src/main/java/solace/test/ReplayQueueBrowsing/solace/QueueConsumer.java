@@ -5,6 +5,8 @@ import solace.test.ReplayQueueBrowsing.util.MessageWebSocketHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets;
+
 @Component
 public class QueueConsumer {
 
@@ -49,15 +51,39 @@ public class QueueConsumer {
 
         // 4. 브라우징 시작 및 메시지 처리
         BytesXMLMessage msg;
-        while ((msg = browser.getNext()) != null) { // 메시지를 브라우징
+        while ((msg = browser.getNext()) != null) {
             try {
-                // 메시지 내용 출력 (TextMessage 확인)
-                if (msg instanceof TextMessage) {
+                // 메시지 타입 출력
+                System.out.println("Message Type: " + msg.getClass().getName());
+
+               if (!running) return; // running 상태가 false면 중단
+               if (msg instanceof TextMessage) {
                     String receivedMessage = ((TextMessage) msg).getText();
                     System.out.printf("Received TextMessage: %s%n", receivedMessage);
-                } else {
-                    System.out.println("Received Non-Text Message.");
-                }
+
+                    // WebSocket을 통해 프론트엔드로 메시지 전송
+                    webSocketHandler.broadcast(receivedMessage);
+
+               } else if (msg instanceof BytesXMLMessage) {
+                    // BytesXMLMessage 처리
+                    BytesXMLMessage bytesMessage = (BytesXMLMessage) msg;
+                    byte[] payload = new byte[bytesMessage.getAttachmentContentLength()];
+                    bytesMessage.getAttachmentByteBuffer().get(payload);
+
+                    // 바이트 데이터를 문자열로 변환 (UTF-8로 가정)
+                    String receivedMessage = new String(payload, StandardCharsets.UTF_8);
+                    System.out.printf("Received BytesMessage as Text: %s%n", receivedMessage);
+
+                    // WebSocket을 통해 변환된 메시지 전송
+                    webSocketHandler.broadcast(receivedMessage);
+               } else {
+                    // 예상치 못한 타입 처리
+                    System.out.println("Received Unknown Message Type: " + msg.getClass().getName());
+               }
+               //System.out.printf("Message Dump: %s%n", msg.dump());
+               // msg.ackMessage();  //메시지 ACK 안보내면 Queue에 남음
+
+
                 // 메시지 덤프 출력
                 System.out.printf("Message Dump: %s%n", msg.dump());
 

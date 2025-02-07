@@ -2,6 +2,7 @@ package solace.test.ReplayQueueBrowsing.util;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
@@ -13,8 +14,10 @@ public class MessageWebSocketHandler extends TextWebSocketHandler {
     private final CopyOnWriteArraySet<org.springframework.web.socket.WebSocketSession> sessions = new CopyOnWriteArraySet<>();
 
     @Override
-    public void afterConnectionEstablished(org.springframework.web.socket.WebSocketSession session) throws Exception {
+    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+        System.out.println("New WebSocket connection established: " + session.getId());
         sessions.add(session);
+        System.out.println("Active sessions after addition: " + sessions.size());
     }
 
     @Override
@@ -28,6 +31,10 @@ public class MessageWebSocketHandler extends TextWebSocketHandler {
     }
 
     public void broadcast(String message) {
+        System.out.println("WebSocket:broadcast method");
+        System.out.println("WebSocket:broadcast method | Active sessions count: " + sessions.size());
+        System.out.println("Sending message to session: " + sessions.toString() + " | Open: " + sessions.stream().anyMatch(org.springframework.web.socket.WebSocketSession::isOpen));
+
         sessions.forEach(session -> {
             try {
                 session.sendMessage(new TextMessage(message));
